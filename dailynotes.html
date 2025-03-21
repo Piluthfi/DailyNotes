@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DailyNotes - Catat momen penting Anda</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #6A41A4;
+            background-image: linear-gradient(135deg, #6A41A4, #9063DB);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px; /* Perlebar container */
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 12px;
+            padding: 30px; /* Tambah padding dalam card */
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .app-header {
+            text-align: center;
+            margin-bottom: 25px; /* Tambah margin bottom */
+            color: #333;
+            font-size: 28px; /* Perbesar font header */
+        }
+
+        .app-tagline {
+            text-align: center;
+            color: #666;
+            font-size: 16px; /* Perbesar font tagline */
+            margin-bottom: 30px; /* Tambah margin bottom */
+        }
+
+        .input-group {
+            margin-bottom: 20px; /* Tambah margin bottom */
+        }
+
+        input {
+            width: 100%;
+            padding: 15px 20px; /* Tambah padding input */
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px; /* Perbesar font input */
+            color: #333;
+            background-color: #f5f5f5;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #6A41A4;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 15px; /* Tambah padding button */
+            border: none;
+            border-radius: 6px;
+            font-size: 16px; /* Perbesar font button */
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .btn-primary {
+            background-color: #6A41A4;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #5a379b;
+        }
+
+        .btn-secondary {
+            background-color: #eaeaea;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background-color: #dddddd;
+        }
+
+        .header-bar {
+            width: 100%;
+            background-color: #6A41A4;
+            color: white;
+            padding: 20px; /* Tambah padding header bar */
+            border-radius: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px; /* Tambah margin bottom */
+        }
+
+        .user-initial {
+            background-color: #5a379b;
+            width: 40px; /* Perbesar user initial */
+            height: 40px; /* Perbesar user initial */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-weight: bold;
+            font-size: 18px; /* Perbesar font user initial */
+        }
+
+        .note-list {
+            list-style: none;
+        }
+
+        .note-item {
+            padding: 20px; /* Tambah padding note item */
+            border-bottom: 1px solid #eee;
+            display: flex; /* Use flexbox for layout */
+            justify-content: space-between; /* Space between title and date */
+            align-items: flex-start; /* Align items to the start (top) */
+        }
+
+        .note-title {
+            font-weight: 600;
+            margin-bottom: 10px; /* Tambah margin bottom */
+            color: #333;
+            font-size: 18px; /* Perbesar font note title */
+            flex-grow: 1; /* Allow title to take up available space */
+        }
+
+        .note-preview {
+            font-size: 14px; /* Perbesar font note preview */
+            color: #666;
+            margin-bottom: 12px; /* Tambah margin bottom */
+            display: block; /* Ensure preview is displayed */
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .note-date {
+            font-size: 13px; /* Perbesar font note date */
+            color: #888;
+            text-align: right; /* Redundant, kept for clarity */
+        }
+
+        .note-item {
+            padding: 20px; /* Tambah padding note item */
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .note-item:hover {
+            background-color: #f9f5ff;
+        }
+
+        .note-detail-date {
+            font-size: 13px; /* Perbesar font note detail date */
+            color: #888;
+            margin-bottom: 25px; /* Tambah margin bottom */
+        }
+
+        .note-detail-content {
+            background-color: #f9f9f9;
+            padding: 20px; /* Tambah padding note detail content */
+            border-radius: 6px;
+            margin-bottom: 25px; /* Tambah margin bottom */
+            min-height: 200px; /* Perbesar tinggi minimal note detail content */
+            white-space: pre-line;
+            font-size: 15px; /* Perbesar font note detail content */
+        }
+
+        .btn-danger {
+            background-color: #e74c3c;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #c0392b;
+        }
+
+        .confirmation-modal p {
+            margin-bottom: 25px; /* Tambah margin bottom */
+            text-align: center;
+            font-size: 16px; /* Perbesar font confirmation modal */
+        }
+
+        .fab-button {
+            position: fixed;
+            bottom: 30px; /* Tambah jarak bawah */
+            right: 30px; /* Tambah jarak kanan */
+            background-color: #6A41A4;
+            color: white;
+            width: 60px; /* Perbesar FAB */
+            height: 60px; /* Perbesar FAB */
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px; /* Perbesar font FAB */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            z-index: 10;
+            transition: all 0.2s ease; /* Tambah transisi */
+        }
+
+        .fab-button:hover {
+            transform: scale(1.1); /* Efek membesar saat hover */
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* Tambah shadow saat hover */
+        }
+
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            display: none;
+        }
+
+        .modal-content {
+            background-color: white;
+            width: 95%; /* Perlebar modal content */
+            max-width: 600px; /* Sesuaikan max-width dengan container */
+            border-radius: 12px;
+            padding: 30px; /* Tambah padding modal content */
+        }
+
+        .modal-title {
+            margin-bottom: 20px; /* Tambah margin bottom */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title h3 {
+            color: #333;
+            font-size: 24px; /* Perbesar font modal title */
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px; /* Perbesar font close button */
+            cursor: pointer;
+            color: #999;
+            transition: color 0.2s; /* Tambah transisi warna */
+        }
+
+        .close-btn:hover {
+            color: #666; /* Ubah warna saat hover */
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 180px; /* Perbesar tinggi minimal textarea */
+            border: 1px solid #eee;
+            border-radius: 6px;
+            padding: 15px;
+            font-size: 16px; /* Perbesar font textarea */
+            margin-bottom: 20px; /* Tambah margin bottom */
+            resize: none;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .success-modal {
+            text-align: center;
+            padding: 30px; /* Tambah padding success modal */
+        }
+
+        .success-icon {
+            width: 70px; /* Perbesar success icon */
+            height: 70px; /* Perbesar success icon */
+            background-color: #4caf50;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px; /* Perbesar font success icon */
+            margin: 0 auto 20px; /* Tambah margin bottom */
+        }
+
+        .success-message {
+            margin-bottom: 15px;
+            font-weight: bold;
+            color: #333;
+            font-size: 20px; /* Perbesar font success message */
+        }
+
+        .success-submessage {
+            font-size: 16px; /* Perbesar font success submessage */
+            color: #666;
+            margin-bottom: 25px; /* Tambah margin bottom */
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px; /* Tambah gap */
+            margin-top: 20px; /* Tambah margin top */
+        }
+
+        .action-btn {
+            width: 50px; /* Perbesar action button */
+            height: 50px; /* Perbesar action button */
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: all 0.2s ease;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .btn-delete {
+            background-color: #f8d7da;
+            color: #e74c3c;
+        }
+
+        .btn-edit {
+            background-color: #d6e9f9;
+            color: #3498db;
+        }
+
+        .icon {
+            font-size: 24px; /* Perbesar font icon */
+            font-style: normal;
+        }
+
+        /* Screens */
+        #loginScreen {
+            display: none;
+        }
+
+        #noteListScreen {
+            display: none;
+        }
+
+        #createNoteModal {
+            display: none;
+        }
+
+        #successModal {
+            display: none;
+        }
+
+        #viewNoteModal {
+            display: none;
+        }
+
+        #deleteConfirmModal {
+            display: none;
+        }
+
+        /* Search Bar */
+        .search-input-group {
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center; /* Vertically center the elements */
+        }
+
+        .search-input-group input {
+            flex: 1; /* Allow input to take up available space */
+            border-radius: 6px 0 0 6px; /* Rounded corners on left side */
+            padding-right: 40px; /* Make space for the search icon */
+        }
+
+        .search-input-group button {
+            background: none;
+            border: none;
+            padding: 0;
+            margin-left: -35px; /* Overlap the input slightly */
+            cursor: pointer;
+            opacity: 0.6; /* Make the icon slightly transparent */
+        }
+
+        .search-input-group button:hover {
+            opacity: 1; /* Full opacity on hover */
+        }
+
+        .search-icon {
+            font-size: 20px;
+            color: #999;
+        }
+        
+        .filter-buttons {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .filter-button {
+            background-color: #e0e0e0;
+            color: #333;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 20px; /* Rounded corners */
+            margin: 0 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            font-size: 14px;
+        }
+
+        .filter-button:hover {
+            background-color: #ccc;
+        }
+        .filter-button.active {
+            background-color: #6A41A4;
+            color: white;
+        }
+
+        .important-icon {
+            color: #FFD700; /* Gold color for star */
+            margin-right: 5px; /* Adjust spacing as needed */
+            font-size: 1.2em;  /* Make it slightly larger */
+            vertical-align: middle; /* Vertically align with the title */
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container" id="loginScreen">
+        <div class="card">
+            <h2 class="app-header">DailyNotes</h2>
+            <p class="app-tagline">Catat momen penting Anda</p>
+
+            <div class="input-group">
+                <input type="text" id="loginEmail" placeholder="Email atau Username" required>
+            </div>
+
+            <div class="input-group">
+                <input type="password" id="loginPassword" placeholder="Password" required>
+            </div>
+
+            <button class="btn btn-primary" onclick="showNoteList()">Masuk</button>
+        </div>
+    </div>
+
+    <div class="container" id="noteListScreen">
+        <div class="header-bar">
+            <h2>DailyNotes</h2>
+            <div class="user-initial">JD</div>
+        </div>
+
+        <div class="card">
+            <div class="search-input-group">
+                <input type="text" id="searchBar" placeholder="Cari catatan...">
+                <button id="searchButton"><i class="search-icon">🔍</i></button>
+            </div>
+            
+            <div class="filter-buttons">
+                <button class="filter-button active" data-filter="semua">Semua</button>
+                <button class="filter-button" data-filter="penting">Penting</button>
+                <button class="filter-button" data-filter="terbaru">Terbaru</button>
+            </div>
+
+            <h3 style="margin-bottom: 15px;">Semua Catatan</h3>
+
+            <ul class="note-list" id="noteList">
+                <li class="note-item" data-title="Meeting dengan Tim" data-content="Diskusi tentang proyek baru dan pembagian tugas. Setiap anggota tim akan mendapatkan tugas sesuai dengan keahlian masing-masing. Perlu melakukan follow-up minggu depan untuk progress report." data-date="01/03/2025" data-important="true">
+                    <div class="note-title">
+                        <span class="important-icon" style="display: none;">⭐</span>
+                        Meeting dengan Tim
+                    </div>
+                    <div class="note-preview">Diskusi tentang proyek baru dan pembagian tugas...</div>
+                    <div class="note-date">01/03/2025</div>
+                </li>
+                <li class="note-item" data-title="Ide Proyek Baru" data-content="Beberapa konsep untuk pengembangan aplikasi mobile dengan fitur yang inovatif. Perlu riset tambahan tentang teknologi AI yang bisa diintegrasikan." data-date="03/03/2025">
+                    <div class="note-title">Ide Proyek Baru</div>
+                    <div class="note-preview">Beberapa konsep untuk pengembangan aplikasi...</div>
+                    <div class="note-date">03/03/2025</div>
+                </li>
+                <li class="note-item" data-title="Jadwal" data-content="Jadwal senin: 
+- Meeting jam 9 pagi
+- Review kode jam 2 siang
+- Call dengan klien jam 4 sore" data-date="21/03/2025" data-important="true">
+                    <div class="note-title">
+                        <span class="important-icon" style="display: none;">⭐</span>
+                        Jadwal
+                    </div>
+                    <div class="note-preview">Jadwal senin</div>
+                    <div class="note-date">21/03/2025</div>
+                </li>
+            </ul>
+        </div>
+
+        <div class="fab-button" onclick="showCreateNoteModal()">+</div>
+    </div>
+
+    <div class="modal" id="createNoteModal">
+        <div class="modal-content">
+            <div class="modal-title">
+                <h3>Buat Catatan Baru</h3>
+                <button class="close-btn" onclick="hideCreateNoteModal()">×</button>
+            </div>
+
+            <div class="input-group">
+                <input type="text" id="noteTitleInput" placeholder="Judul catatan...">
+            </div>
+
+            <textarea id="noteContentInput" placeholder="Tulis catatan Anda di sini..."></textarea>
+            
+            <div class="input-group">
+                <label for="importantCheckbox">Penting:</label>
+                <input type="checkbox" id="importantCheckbox">
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="hideCreateNoteModal()">Batal</button>
+                <button class="btn btn-primary" onclick="saveNote()">Simpan</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="successModal">
+        <div class="modal-content success-modal">
+            <div class="success-icon">✓</div>
+            <div class="success-message">Berhasil!</div>
+            <div class="success-submessage">Catatan telah tersimpan</div>
+            <button class="btn btn-primary" onclick="hideSuccessModal()">Kembali</button>
+        </div>
+    </div>
+
+    <div class="modal" id="viewNoteModal">
+        <div class="modal-content">
+            <div class="modal-title">
+                <h3 id="viewNoteTitle">Judul Catatan</h3>
+                <button class="close-btn" onclick="hideViewNoteModal()">×</button>
+            </div>
+
+            <div class="note-detail-date" id="viewNoteDate">01/01/2025</div>
+
+            <div class="note-detail-content" id="viewNoteContent">
+                Isi catatan akan muncul di sini...
+            </div>
+
+            <div class="modal-actions">
+                <button class="action-btn btn-delete" onclick="deleteNote()"><i class="icon">🗑️</i></button>
+                <button class="action-btn btn-edit" onclick="editNote()"><i class="icon">✏️</i></button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="deleteConfirmModal">
+        <div class="modal-content confirmation-modal">
+            <div class="modal-title">
+                <h3>Konfirmasi Hapus</h3>
+                <button class="close-btn" onclick="hideDeleteConfirmModal()">×</button>
+            </div>
+
+            <p>Apakah Anda yakin ingin menghapus catatan ini?</p>
+
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="hideDeleteConfirmModal()">Batal</button>
+                <button class="btn btn-danger" onclick="confirmDelete()">Hapus</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables for tracking current note
+        let currentNoteElement = null;
+        window.isEditing = false;
+        window.editingNoteElement = null;
+
+        function showNoteList() {
+            const emailValue = document.getElementById('loginEmail').value;
+            const passwordValue = document.getElementById('loginPassword').value;
+
+            // Tambahkan validasi login jika diperlukan
+            if (emailValue && passwordValue) { // Contoh validasi sederhana
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('noteListScreen').style.display = 'block';
+                 // Clear search input when switching to note list
+                document.getElementById('searchBar').value = '';
+                filterNotes('semua'); // Show all notes by default
+            } else {
+                alert('Silakan masukkan email dan password Anda.');
+            }
+        }
+
+        function showCreateNoteModal() {
+            // Reset form dan judul modal
+            document.querySelector('#createNoteModal .modal-title h3').textContent = 'Buat Catatan Baru';
+            document.querySelector('#createNoteModal .btn-primary').textContent = 'Simpan';
+            document.querySelector('#createNoteModal input').value = '';
+            document.querySelector('#createNoteModal textarea').value = '';
+            document.getElementById('importantCheckbox').checked = false; // Reset checkbox
+
+            // Reset status editing
+            window.isEditing = false;
+            window.editingNoteElement = null;
+
+            document.getElementById('createNoteModal').style.display = 'flex';
+        }
+
+        function hideCreateNoteModal() {
+            document.getElementById('createNoteModal').style.display = 'none';
+        }
+
+        function showSuccessModal() {
+            document.getElementById('createNoteModal').style.display = 'none';
+            document.getElementById('successModal').style.display = 'flex';
+        }
+
+        function hideSuccessModal() {
+            document.getElementById('successModal').style.display = 'none';
+            document.getElementById('noteListScreen').style.display = 'block';
+        }
+
+        // View note detail functions
+        function viewNoteDetail(noteElement) {
+            // Store reference to the clicked note element
+            currentNoteElement = noteElement;
+
+            // Populate the view modal
+            const title = noteElement.getAttribute('data-title');
+            const content = noteElement.getAttribute('data-content');
+            const date = noteElement.getAttribute('data-date');
+            const important = noteElement.getAttribute('data-important') === 'true';
+
+            document.getElementById('viewNoteTitle').textContent = title;
+            document.getElementById('viewNoteContent').textContent = content;
+            document.getElementById('viewNoteDate').textContent = date;
+
+            // Show the modal
+            document.getElementById('viewNoteModal').style.display = 'flex';
+        }
+
+        function hideViewNoteModal() {
+            document.getElementById('viewNoteModal').style.display = 'none';
+        }
+
+        // Edit note function
+        function editNote() {
+            // Menyimpan nilai saat ini
+            const currentTitle = document.getElementById('viewNoteTitle').textContent;
+            const currentContent = document.getElementById('viewNoteContent').textContent;
+            const currentDate = document.getElementById('viewNoteDate').textContent;
+            const important = currentNoteElement.getAttribute('data-important') === 'true';
+
+            // Sembunyikan modal view
+            hideViewNoteModal();
+
+            // Tampilkan modal create dengan nilai yang sudah ada
+            const titleInput = document.getElementById('noteTitleInput');
+            const contentTextarea = document.getElementById('noteContentInput');
+            const importantCheckbox = document.getElementById('importantCheckbox');
+
+            titleInput.value = currentTitle;
+            contentTextarea.value = currentContent;
+            importantCheckbox.checked = important;
+
+            // Ubah judul modal dan tombol
+            document.querySelector('#createNoteModal .modal-title h3').textContent = 'Edit Catatan';
+            document.querySelector('#createNoteModal .btn-primary').textContent = 'Simpan Perubahan';
+
+            // Tampilkan modal edit (menggunakan modal create yang sudah dimodifikasi)
+            document.getElementById('createNoteModal').style.display = 'flex';
+
+            // Simpan status editing untuk digunakan saat menyimpan
+            window.isEditing = true;
+            window.editingNoteElement = currentNoteElement;
+        }
+
+        // Delete note functions
+        function deleteNote() {
+            // Show delete confirmation modal
+            document.getElementById('deleteConfirmModal').style.display = 'flex';
+        }
+
+        function hideDeleteConfirmModal() {
+            document.getElementById('deleteConfirmModal').style.display = 'none';
+            document.getElementById('viewNoteModal').style.display = 'flex';
+        }
+
+        function confirmDelete() {
+            // Remove the note from the DOM
+            if (currentNoteElement) {
+                currentNoteElement.remove();
+                currentNoteElement = null;
+            }
+
+            // Hide the confirmation modal
+            document.getElementById('deleteConfirmModal').style.display = 'none';
+
+            // Hide the view note modal
+            document.getElementById('viewNoteModal').style.display = 'none';
+
+            // Show success notification
+            const successModal = document.getElementById('successModal');
+            document.querySelector('.success-message').textContent = 'Berhasil!';
+            document.querySelector('.success-submessage').textContent = 'Catatan telah dihapus';
+            successModal.style.display = 'flex';
+        }
+
+        // Save note function
+        function saveNote() {
+            const title = document.getElementById('noteTitleInput').value;
+            const content = document.getElementById('noteContentInput').value;
+            const important = document.getElementById('importantCheckbox').checked;
+            const importantIcon = important ? '<span class="important-icon">⭐</span>' : '<span class="important-icon" style="display: none;">⭐</span>';
+
+
+            if (title && content) {
+                if (window.isEditing && window.editingNoteElement) {
+                    // Update nilai dalam list
+                    window.editingNoteElement.setAttribute('data-title', title);
+                    window.editingNoteElement.setAttribute('data-content', content);
+                    window.editingNoteElement.setAttribute('data-date', window.editingNoteElement.getAttribute('data-date')); //keep date
+                    window.editingNoteElement.setAttribute('data-important', important);
+
+                    const titleElem = window.editingNoteElement.querySelector('.note-title');
+                    const previewElem = window.editingNoteElement.querySelector('.note-preview');
+                    titleElem.innerHTML = importantIcon + title; // Update title with important icon
+                    previewElem.textContent = content.substring(0, 50) + (content.length > 50 ? '...' : '');
+
+                    // Reset status editing
+                    window.isEditing = false;
+                    window.editingNoteElement = null;
+
+                    // Ubah kembali judul modal dan tombol
+                    document.querySelector('#createNoteModal .modal-title h3').textContent = 'Buat Catatan Baru';
+                    document.querySelector('#createNoteModal .btn-primary').textContent = 'Simpan';
+
+                    // Show success notification
+                    document.querySelector('.success-message').textContent = 'Berhasil!';
+                    document.querySelector('.success-submessage').textContent = 'Catatan telah diperbarui';
+                } else {
+                    // Create a new note in the list
+                    const noteList = document.getElementById('noteList');
+                    const today = new Date();
+                    const dateStr = today.toLocaleDateString('id-ID');
+
+                    const newNote = document.createElement('li');
+                    newNote.className = 'note-item';
+                    newNote.setAttribute('data-title', title);
+                    newNote.setAttribute('data-content', content);
+                    newNote.setAttribute('data-date', dateStr);
+                    newNote.setAttribute('data-important', important);
+
+
+                    newNote.innerHTML = `
+                        <div class="note-title">
+                            ${importantIcon}
+                            ${title}
+                        </div>
+                        <div class="note-preview">${content.substring(0, 50)}${content.length > 50 ? '...' : ''}</div>
+                        <div class="note-date">${dateStr}</div>
+                    `;
+
+                    noteList.prepend(newNote);
+
+                    // Show success notification
+                    document.querySelector('.success-message').textContent = 'Berhasil!';
+                    document.querySelector('.success-submessage').textContent = 'Catatan telah disimpan';
+                }
+
+                // Clear form
+                document.getElementById('noteTitleInput').value = '';
+                document.getElementById('noteContentInput').value = '';
+                document.getElementById('importantCheckbox').checked = false;
+
+                // Show success modal
+                hideCreateNoteModal();
+                showSuccessModal();
+            }
+        }
+
+        // Pastikan kita dimulai dari halaman login
+        document.addEventListener('DOMContentLoaded', function () {
+            document.getElementById('loginScreen').style.display = 'block';
+            document.getElementById('noteListScreen').style.display = 'none';
+
+            // Attach event listener to the search button
+            document.getElementById('searchButton').addEventListener('click', function() {
+                const searchTerm = document.getElementById('searchBar').value.toLowerCase();
+                const noteListItems = document.querySelectorAll('.note-item');
+
+                noteListItems.forEach(item => {
+                    const title = item.getAttribute('data-title').toLowerCase();
+                    const content = item.getAttribute('data-content').toLowerCase();
+
+                    if (title.includes(searchTerm) || content.includes(searchTerm)) {
+                        item.style.display = ''; // Show the item
+                    } else {
+                        item.style.display = 'none'; // Hide the item
+                    }
+                });
+            });
+            
+            // Filter notes
+            const filterButtons = document.querySelectorAll('.filter-button');
+            filterButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const filter = this.dataset.filter;
+                    filterNotes(filter);
+                    
+                    // Remove active class from all buttons
+                    filterButtons.forEach(b => b.classList.remove('active'));
+                    // Add active class to the clicked button
+                    this.classList.add('active');
+                });
+            });
+            
+            function filterNotes(filter) {
+                const noteListItems = document.querySelectorAll('.note-item');
+                const today = new Date();
+                const todayDate = today.toISOString().split('T')[0];
+                
+                noteListItems.forEach(item => {
+                    const isImportant = item.getAttribute('data-important') === 'true';
+                    const itemDate = item.getAttribute('data-date');
+                    
+                    if (filter === 'semua') {
+                        item.style.display = '';
+                    } else if (filter === 'penting') {
+                        item.style.display = isImportant ? '' : 'none';
+                    } else if (filter === 'terbaru') {
+                         // Compare dates directly as strings
+                        item.style.display = itemDate === todayDate ? '' : 'none';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+            }
+            
+            // Initial filter
+            filterNotes('semua');
+            
+             // Add event listener for viewing note details.  Use event delegation.
+            document.getElementById('noteList').addEventListener('click', function(event) {
+                let target = event.target;
+                
+                 // Find the parent .note-item, if the clicked element is within a note item
+                while (target && !target.classList.contains('note-item')) {
+                    target = target.parentElement;
+                }
+                
+                if (target) {
+                    viewNoteDetail(target);
+                }
+            });
+            
+        });
+    </script>
+</body>
+</html>
